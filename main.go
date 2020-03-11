@@ -123,6 +123,7 @@ func main() {
 	outputDir := flag.String("outputDir", ".", "Where to put the results")
 	replayDir := flag.String("replayDir", ".", "A dir containing a replay.json and images")
 	nJobs := flag.Int("j", runtime.NumCPU()+2, "Number of jobs to use for converting")
+	modifyReplayJson := flag.Bool("i", false, "Whether to modify the original replay.json")
 	help := flag.Bool("h", false, "Display Help text")
 	flag.Parse()
 	if *help {
@@ -206,12 +207,16 @@ func main() {
 			replayJson.Frames[i].TopImage = frame.filenamePngRel
 		}
 	}
-	// Generate a new json object with the new filenames
-	newJson, err := json.Marshal(replayJson)
-	errors.Check(err, "Error creating new replay.json")
-	// Overwrite the replay.json
-	err = ioutil.WriteFile(replayJsonPath, newJson, os.FileMode(600))
-	errors.Check(err, "Error writing new replay.json to file")
+
+	// We only want to modify the original replay.json if the user says so
+	if *modifyReplayJson {
+		// Generate a new json object with the new filenames
+		newJson, err := json.Marshal(replayJson)
+		errors.Check(err, "Error creating new replay.json")
+		// Overwrite the replay.json
+		err = ioutil.WriteFile(replayJsonPath, newJson, os.FileMode(600))
+		errors.Check(err, "Error writing new replay.json to file")
+	}
 
 	// Finish and print time it took
 	fmt.Println("Finished converting after ", time.Since(startTime).String(), "!")

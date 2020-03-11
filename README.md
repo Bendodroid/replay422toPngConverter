@@ -14,14 +14,14 @@ Make sure that `$(go env GOPATH)/bin` is available in your `$PATH`.
 
 ```text
 $ replay422ToPngConverter -h
--h
-    Display Help text
+-h    Display Help text
+-i    Whether to modify the original replay.json
 -j int
-    Number of jobs to use for converting (default <nproc+2>)
+      Number of jobs to use for converting (default <nproc+2>)
 -replayDir string
-    A dir containing a replay.json and images (default ".")
+      A dir containing a replay.json and images (default ".")
 -outputDir string
-    Where to put the results (default ".")
+      Where to put the results (default ".")
 ```
 
 Run the tool from anywhere and give paths as arguments or run it in the directory containing the replay.json directly.
