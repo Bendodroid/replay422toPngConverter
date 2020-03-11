@@ -120,13 +120,14 @@ func main() {
 	startTime := time.Now()
 
 	// Input arguments
-	replayDir := flag.String("replayDir", ".", "A dir containing a replay.json and images")
 	outputDir := flag.String("outputDir", ".", "Where to put the results")
+	replayDir := flag.String("replayDir", ".", "A dir containing a replay.json and images")
 	nJobs := flag.Int("j", runtime.NumCPU()+2, "Number of jobs to use for converting")
 	help := flag.Bool("h", false, "Display Help text")
 	flag.Parse()
 	if *help {
 		flag.PrintDefaults()
+		os.Exit(0)
 	}
 
 	var replayJson = new(replay.Info)
@@ -179,7 +180,7 @@ func main() {
 	// Put all the frames into a channel for the workers
 	jobsChan := make(chan *frameContainer, len(frames))
 	replyChan := make(chan workerReply, len(frames))
-	for i, _ := range frames {
+	for i := range frames {
 		jobsChan <- &frames[i]
 	}
 	close(jobsChan)
