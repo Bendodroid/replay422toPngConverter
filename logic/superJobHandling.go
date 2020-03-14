@@ -21,7 +21,7 @@ func HandleSuperJob(job *models.SuperJob) {
 	}
 }
 
-func BuildSuperJob(job *models.SuperJob, nJobs int, pngCompression int, modifyOriginal bool) {
+func BuildSuperJob(job *models.SuperJob, nJobs, pngCompression int, modifyOriginal bool) {
 	info, err := ioutil.ReadDir(job.Dir)
 	errors.Check(err, "Reading contents of "+job.Dir+" failed!")
 	job.Queue = make(chan models.ReplayJsonContainer, len(info))

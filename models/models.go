@@ -42,13 +42,13 @@ type Info struct {
 
 // FrameContainer is a container for an individual frame
 type FrameContainer struct {
-	IsTop          bool                 // Whether the image is from the topCamera
-	Filename       string               // The (rel) filename of the .422 file
-	FilenamePngRel string               // The rel path to the .png file
-	FilenamePngAbs string               // The abs path to the .png file
-	ImageSize422   []uint16             // Image dimensions of the .422 image
-	ImageSize444   []uint16             // Image dimensions of the 444 png image
-	Compression    png.CompressionLevel // Compression Level for the target image
+	IsTop        bool                 // Whether the image is from the topCamera
+	Path422      string               // The (rel) filename of the .422 file
+	PathPngRel   string               // The rel path to the .png file
+	PathPngAbs   string               // The abs path to the .png file
+	ImageSize422 []uint16             // Image dimensions of the .422 image
+	ImageSize444 []uint16             // Image dimensions of the 444 png image
+	Compression  png.CompressionLevel // Compression Level for the target image
 }
 
 // Worker reply

@@ -4,7 +4,9 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"log"
+	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/Bendodroid/replay422toPngConverter/errors"
 	"github.com/Bendodroid/replay422toPngConverter/models"
@@ -31,19 +33,13 @@ func LoadReplayJson(filename string, target *models.Info) {
 // FindReplayJson finds a replay.json in a dir's replay_* subdirectory
 func FindReplayJson(rjc *models.ReplayJsonContainer) error {
 	var replayDir string
-	// Read contents of dir (something like 10.1.24.xx)
-	files, err := ioutil.ReadDir(rjc.RobotPath)
-	errors.Check(err, "Error reading contents of directory "+rjc.RobotPath)
 	// Match the replay_* directory
-	for _, f := range files {
-		if isMatch, _ := filepath.Match("replay_*", f.Name()); f.IsDir() && isMatch {
-			replayDir = filepath.Join(rjc.RobotPath, f.Name())
-			// It's a match -> Generate ReplayJsonContainer and return it
-			GetReplayJsonFromDir(rjc, &replayDir)
-			return nil
-		}
+	if f, _ := MatchPatternInPath(rjc.RobotPath, "replay_*"); f != nil {
+		replayDir = filepath.Join(rjc.RobotPath, f.Name())
+		// It's a match -> Generate ReplayJsonContainer and return it
+		GetReplayJsonFromDir(rjc, &replayDir)
+		return nil
 	}
-	// Found nothing -> error
 	return replayJsonNotFoundError{dir: rjc.RobotPath}
 }
 
@@ -59,4 +55,28 @@ func GetReplayJsonFromDir(rjc *models.ReplayJsonContainer, replayDir *string) {
 	// Load replay.json
 	LoadReplayJson(rjc.ReplayJsonPath, &rjc.ReplayJson)
 	log.Printf("Successfully loaded %s !\n", rjc.ReplayJsonPath)
+}
+
+func MatchPatternInPath(path, pattern string) (os.FileInfo, error) {
+	// Read contents of dir
+	files, err := ioutil.ReadDir(path)
+	errors.Check(err, "Error reading contents of directory "+path)
+	// Match the dir pattern
+	for _, f := range files {
+		if isMatch, _ := filepath.Match(pattern, f.Name()); isMatch {
+			return f, nil
+		}
+	}
+	return nil, err
+}
+
+func ExpandHome(path string) string {
+	dir, _ := os.UserHomeDir()
+	if path == "~" {
+		return dir
+	} else if strings.HasPrefix(path, "~/") {
+		return filepath.Join(dir, path[2:])
+	} else {
+		return path
+	}
 }
