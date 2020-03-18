@@ -1,7 +1,5 @@
 package models
 
-import "image/png"
-
 // Info is the struct representing the data in a replay.json file
 type Info struct {
 	Config []interface{}
@@ -29,7 +27,7 @@ type Info struct {
 			} `json:"buffer"`
 			Valid bool `json:"valid"`
 		} `json:"headMatrixBuffer"`
-		ImageSize422 []uint16  `json:"imageSize422"`
+		ImageSize422 [2]uint16 `json:"imageSize422"`
 		Imu          []float64 `json:"imu"`
 		JointAngles  []float64 `json:"jointAngles"`
 		SonarDist    []float64 `json:"sonarDist"`
@@ -40,38 +38,8 @@ type Info struct {
 	} `json:"frames"`
 }
 
-// FrameContainer is a container for an individual frame
-type FrameContainer struct {
-	IsTop        bool                 // Whether the image is from the topCamera
-	Path422      string               // The (rel) filename of the .422 file
-	PathPngRel   string               // The rel path to the .png file
-	PathPngAbs   string               // The abs path to the .png file
-	ImageSize422 []uint16             // Image dimensions of the .422 image
-	ImageSize444 []uint16             // Image dimensions of the 444 png image
-	Compression  png.CompressionLevel // Compression Level for the target image
-}
-
-// Worker reply
-type WorkerReply struct {
-	Fc      *FrameContainer // A reference to the FrameContainer in question
-	Success bool            // Whether conversion was a success
-	Err     error           // Error value (nil if success)
-	Msg     string          // The error message to print (if applicable)
-}
-
-type ReplayJsonContainer struct {
-	RobotName        string
-	RobotPath        string
-	ReplayJson       Info
-	ReplayDirAbs     string
-	ReplayJsonPath   string
-	OutputDir        string
-	CompressionLevel png.CompressionLevel
-	NJobs            int
-	ModifyOriginal   bool
-}
-
-type SuperJob struct {
-	Queue chan ReplayJsonContainer // A list of jobs (one per replay.json)
-	Dir   string                   // The Dir containing the outputs for each robot
+type Job interface {
+	PrePrepare(replayJsonPath, outputDir string, nJobs, pngCompression int, modifyOriginal bool)
+	Prepare()
+	Run()
 }
