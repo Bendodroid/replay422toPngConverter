@@ -89,7 +89,7 @@ func main() {
 	} else if os.IsNotExist(err) {
 		log.Fatalf("File path %s does not exist!", inputPath)
 	} else {
-		log.Fatalf("Error occured when trying to open %s: \n%s", inputPath, err)
+		log.Fatalf("Error occurred when trying to open %s: \n%s", inputPath, err)
 	}
 
 Exit:
