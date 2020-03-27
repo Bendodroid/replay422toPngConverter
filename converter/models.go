@@ -13,7 +13,7 @@ type FrameContainer struct {
 	Compression  png.CompressionLevel // Compression Level for the target image
 }
 
-// Worker reply
+// WorkerReply is the reply sent from a FrameWorker
 type WorkerReply struct {
 	Fc      *FrameContainer // A reference to the FrameContainer in question
 	Success bool            // Whether conversion was a success

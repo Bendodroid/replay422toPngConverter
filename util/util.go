@@ -19,6 +19,8 @@ func FindReplayJson(robotDir string) (string, string) {
 	return "", ""
 }
 
+// MatchPatternInPath takes a path and a pattern and returns the first element matching the pattern
+// (used to find replay_* directories)
 func MatchPatternInPath(path, pattern string) os.FileInfo {
 	// Read contents of dir
 	files, err := ioutil.ReadDir(path)
@@ -32,6 +34,7 @@ func MatchPatternInPath(path, pattern string) os.FileInfo {
 	return nil
 }
 
+// ExpandPath expands a given path starting with ~
 func ExpandPath(path string) string {
 	path = filepath.Clean(path)
 	homeDir, _ := os.UserHomeDir()

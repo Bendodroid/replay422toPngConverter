@@ -7,7 +7,7 @@ import (
 	"io/ioutil"
 )
 
-const Yuv422PxPairSize int = 4
+const yuv422PxPairSize int = 4
 
 // get4bytes returns 4 bytes individually for a 4-byte slice
 func get4bytes(slice *[4]byte) (*byte, *byte, *byte, *byte) {
@@ -20,8 +20,8 @@ func ConvertFrameToPng(r io.Reader, w io.Writer, fc *FrameContainer, encoder *pn
 	// byte-array to read the source into
 	bytes := make([]byte, fc.ImageSize422[0]*fc.ImageSize422[0]*4)
 	// A pair of yuv 422 YCbCr pixels
-	var yuv422pixelPair [Yuv422PxPairSize]byte
-	var px2rgba [Yuv422PxPairSize * 2]*byte
+	var yuv422pixelPair [yuv422PxPairSize]byte
+	var px2rgba [yuv422PxPairSize * 2]*byte
 	// vars for the channels
 	y1, cb, y2, cr, alpha := new(byte), new(byte), new(byte), new(byte), new(byte)
 	// Always full alpha
@@ -36,13 +36,13 @@ func ConvertFrameToPng(r io.Reader, w io.Writer, fc *FrameContainer, encoder *pn
 	// Iterate over the data in the ugliest way possible
 	var i, j int
 	for i = 0; i < len(bytes); i += 4 {
-		for x := 0; x < Yuv422PxPairSize; x++ {
+		for x := 0; x < yuv422PxPairSize; x++ {
 			yuv422pixelPair[x] = bytes[i+x]
 		}
 		y1, cb, y2, cr = get4bytes(&yuv422pixelPair)
 
-		px2rgba = [Yuv422PxPairSize * 2]*byte{y1, cb, cr, alpha, y2, cb, cr, alpha}
-		for j = 0; j < Yuv422PxPairSize*2; j++ {
+		px2rgba = [yuv422PxPairSize * 2]*byte{y1, cb, cr, alpha, y2, cb, cr, alpha}
+		for j = 0; j < yuv422PxPairSize*2; j++ {
 			img.Pix[i*2+j] = *px2rgba[j]
 		}
 	}

@@ -13,6 +13,7 @@ import (
 	"github.com/Bendodroid/replay422toPngConverter/errors"
 )
 
+// RobotJob is the data Structure holding information to convert data from a single robot
 type RobotJob struct {
 	// Public
 	ReplayJson       Info
@@ -28,6 +29,7 @@ type RobotJob struct {
 	encoders []*png.Encoder
 }
 
+// PrePrepare fills out the general info for one RobotJob
 func (job *RobotJob) PrePrepare(replayJsonPath, outputDir string, nJobs, pngCompression int, modifyOriginal bool) {
 	// Fill out the details...
 	job.ReplayJsonPath = replayJsonPath
@@ -43,6 +45,7 @@ func (job *RobotJob) PrePrepare(replayJsonPath, outputDir string, nJobs, pngComp
 	log.Printf("Using %s as output dir for %s", job.OutputDir, job.RobotName)
 }
 
+// Prepare reads the replay.json into the RobotJob and populates the frame list
 func (job *RobotJob) Prepare() {
 	// Load replay.json
 	log.Println("Loading replay.json for", job.RobotName)
@@ -84,10 +87,11 @@ func (job *RobotJob) Prepare() {
 	}
 }
 
+// Run creates some encoders, starts some goroutines and synchronizes at the end
 func (job *RobotJob) Run() {
 	// Populate list of encoders
 	job.encoders = make([]*png.Encoder, job.NJobs)
-	for i, _ := range job.encoders {
+	for i := range job.encoders {
 		job.encoders[i] = &png.Encoder{CompressionLevel: job.CompressionLevel}
 	}
 

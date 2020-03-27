@@ -38,6 +38,7 @@ type Info struct {
 	} `json:"frames"`
 }
 
+// Job is the interface implemented by CollectionJob and RobotJob
 type Job interface {
 	PrePrepare(replayJsonPath, outputDir string, nJobs, pngCompression int, modifyOriginal bool)
 	Prepare()

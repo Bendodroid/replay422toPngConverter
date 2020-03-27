@@ -10,11 +10,14 @@ import (
 	"github.com/Bendodroid/replay422toPngConverter/util"
 )
 
+// CollectionJob is the data structure holding information to process multiple RobotJobs
 type CollectionJob struct {
 	Queue   chan RobotJob // A list of jobs (one per replay.json)
 	RootDir string        // The RootDir containing the outputs for each robot
 }
 
+// PrePrepare finds dirs matching 10.1.24.X and generates a RobotJob for each by calling it's PrePrepare() and putting
+// it into the CollectionJob.Queue
 func (job *CollectionJob) PrePrepare(rootDir, outputDir string, nJobs, pngCompression int, modifyOriginal bool) {
 	log.Println("Building jobs...")
 	info, err := ioutil.ReadDir(rootDir)
@@ -38,9 +41,11 @@ func (job *CollectionJob) PrePrepare(rootDir, outputDir string, nJobs, pngCompre
 	log.Println("Building jobs... done")
 }
 
+// Prepare (not implemented)
 func (job *CollectionJob) Prepare() {
 }
 
+// Run gets a RobotJob from the queue, then calls it's Prepare() and Run()
 func (job *CollectionJob) Run() {
 	for rjc := range job.Queue {
 		rjc.Prepare()
